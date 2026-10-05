@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PVF — что это</title>
+  <meta name="description" content="PVF — платформа для создания интерактивных 3D- и VR-приложений.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2312121a'/><text x='50%' y='58%' text-anchor='middle' font-family='Arial' font-weight='700' font-size='24' fill='%237cf2c4'>PVF</text></svg>">
+  <style>
+    :root {
+      --bg: #f6f6f2; --fg: #15151c; --muted: #5d5d6b; --card: #ffffff;
+      --line: #e3e3dc; --accent: #0f9d6e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0e0e13; --fg: #ececf1; --muted: #9a9aab; --card: #17171f;
+              --line: #262632; --accent: #7cf2c4; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--fg);
+      font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    main { max-width: 860px; margin: 0 auto; padding: 72px 20px 48px; }
+    .tag { display: inline-block; font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
+    h1 { font-size: clamp(56px, 14vw, 128px); line-height: 1; margin: 24px 0 8px; letter-spacing: -.04em; }
+    h1 span { color: var(--accent); }
+    .lead { font-size: clamp(19px, 3vw, 24px); color: var(--muted); max-width: 640px; margin: 0 0 56px; }
+    h2 { font-size: 22px; margin: 0 0 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+    .card b { display: block; margin-bottom: 6px; }
+    .card p { margin: 0; color: var(--muted); font-size: 15px; }
+    footer { max-width: 860px; margin: 0 auto; padding: 24px 20px 48px; color: var(--muted);
+      font-size: 14px; border-top: 1px solid var(--line); }
+  </style>
+</head>
+<body>
+  <main>
+    <span class="tag">Тестовая страница</span>
+    <h1>PVF<span>.</span></h1>
+    <p class="lead">PVF — платформа для создания интерактивных 3D- и VR-приложений: от готовых модулей до запуска продукта.</p>
+
+    <h2>Что это такое</h2>
+    <div class="grid">
+      <div class="card"><b>Модули</b><p>Набор готовых компонентов: окружение, персонажи, транспорт, взаимодействия, сеть.</p></div>
+      <div class="card"><b>Инструменты</b><p>Конструкторы приложений и пайплайн подготовки 3D-контента.</p></div>
+      <div class="card"><b>Сервисы</b><p>Бэкенд, аналитика и платежи для реальных продуктов.</p></div>
+    </div>
+  </main>
+  <footer>© <span id="y">2026</span> PVF · pvf.asia</footer>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
