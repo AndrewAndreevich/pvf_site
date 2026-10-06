@@ -23,7 +23,8 @@
       letter-spacing: -.07em; margin-left: -.05em; }
     .globe { display: inline-block; width: .2em; height: .2em; margin-left: .03em; vertical-align: baseline;
       position: relative; }
-    .globe canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: auto; }
+    .globe canvas { position: absolute; left: 0; top: 0; width: 100%; height: 215%; z-index: auto; pointer-events: none; }
+    .tag, .lead { position: relative; z-index: 1; }
     .tag { font-weight: 500; font-size: clamp(18px, 2.4vw, 28px); line-height: 1.25; margin-top: 20px; }
     .tag b { font-weight: 500; color: var(--acid); }
     .lead { margin-top: 10px; font-size: clamp(15px, 1.5vw, 19px); line-height: 1.4; color: var(--dim); max-width: 40ch; }
@@ -100,7 +101,7 @@
       function fit() {
         dpr = Math.min(devicePixelRatio || 1, 2);
         size = g.parentElement.clientWidth * dpr;
-        g.width = g.height = size;
+        g.width = size; g.height = Math.round(size * 2.15);
       }
       addEventListener('resize', fit); fit();
       try {
@@ -109,16 +110,34 @@
       } catch (e) {}
       const proj = d3.geoOrthographic().clipAngle(90);
       const path = d3.geoPath(proj, gx);
+      const grat = d3.geoGraticule10();
       function draw(ms) {
-        const r = size / 2;
+        const r = size / 2, gap = size * .15, H = g.height, lw = Math.max(1, dpr);
         proj.translate([r, r]).scale(r - dpr).rotate([(still ? 0 : ms * .012) % 360 - 20, -18]);
-        gx.clearRect(0, 0, size, size);
+        gx.setTransform(1, 0, 0, 1, 0, 0);
+        gx.clearRect(0, 0, size, H);
+        // the real Earth: solid land, ocean in background colour
         gx.beginPath(); path({ type: 'Sphere' });
         gx.fillStyle = '#050507'; gx.fill();
         if (land) { gx.beginPath(); path(land); gx.fillStyle = '#d4ff3f'; gx.fill(); }
         else { gx.fillStyle = '#d4ff3f'; gx.fill(); }
         gx.beginPath(); path({ type: 'Sphere' });
-        gx.strokeStyle = 'rgba(212,255,63,.55)'; gx.lineWidth = Math.max(1, dpr); gx.stroke();
+        gx.strokeStyle = 'rgba(212,255,63,.55)'; gx.lineWidth = lw; gx.stroke();
+        // its digital twin: the same globe mirrored below as a wireframe
+        gx.setTransform(1, 0, 0, -1, 0, size * 2 + gap);
+        gx.lineWidth = lw * .8;
+        gx.beginPath(); path({ type: 'Sphere' });
+        gx.fillStyle = '#050507'; gx.fill();
+        gx.beginPath(); path(grat); gx.strokeStyle = 'rgba(212,255,63,.28)'; gx.stroke();
+        if (land) { gx.beginPath(); path(land); gx.strokeStyle = 'rgba(212,255,63,.9)'; gx.stroke(); }
+        gx.beginPath(); path({ type: 'Sphere' }); gx.strokeStyle = 'rgba(212,255,63,.5)'; gx.stroke();
+        // fade the reflection out downwards
+        gx.setTransform(1, 0, 0, 1, 0, 0);
+        const fade = gx.createLinearGradient(0, size + gap, 0, size * 2 + gap);
+        fade.addColorStop(0, 'rgba(0,0,0,.25)'); fade.addColorStop(.75, 'rgba(0,0,0,1)');
+        gx.globalCompositeOperation = 'destination-out';
+        gx.fillStyle = fade; gx.fillRect(0, size + gap / 2, size, H - size);
+        gx.globalCompositeOperation = 'source-over';
         if (!still) requestAnimationFrame(draw);
       }
       requestAnimationFrame(draw);
