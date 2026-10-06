@@ -1,52 +1,91 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PVF — что это</title>
-  <meta name="description" content="PVF — платформа для создания интерактивных 3D- и VR-приложений.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2312121a'/><text x='50%' y='58%' text-anchor='middle' font-family='Arial' font-weight='700' font-size='24' fill='%237cf2c4'>PVF</text></svg>">
+  <title>PVF</title>
+  <meta name="description" content="PVF — real-time 3D and VR worlds.">
+  <meta name="theme-color" content="#050507">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%23050507'/><path d='M14 50V14h20a12 12 0 0 1 0 24H24' stroke='%23d4ff3f' stroke-width='7' fill='none'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #f6f6f2; --fg: #15151c; --muted: #5d5d6b; --card: #ffffff;
-      --line: #e3e3dc; --accent: #0f9d6e;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root { --bg: #0e0e13; --fg: #ececf1; --muted: #9a9aab; --card: #17171f;
-              --line: #262632; --accent: #7cf2c4; }
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--fg);
-      font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-    main { max-width: 860px; margin: 0 auto; padding: 72px 20px 48px; }
-    .tag { display: inline-block; font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
-      color: var(--accent); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
-    h1 { font-size: clamp(56px, 14vw, 128px); line-height: 1; margin: 24px 0 8px; letter-spacing: -.04em; }
-    h1 span { color: var(--accent); }
-    .lead { font-size: clamp(19px, 3vw, 24px); color: var(--muted); max-width: 640px; margin: 0 0 56px; }
-    h2 { font-size: 22px; margin: 0 0 20px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
-    .card b { display: block; margin-bottom: 6px; }
-    .card p { margin: 0; color: var(--muted); font-size: 15px; }
-    footer { max-width: 860px; margin: 0 auto; padding: 24px 20px 48px; color: var(--muted);
-      font-size: 14px; border-top: 1px solid var(--line); }
+    :root { --bg: #050507; --fg: #f2f2ee; --dim: #6c6c78; --acid: #d4ff3f; }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { height: 100%; background: var(--bg); color: var(--fg); overflow: hidden; }
+    canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+    .ui { position: fixed; inset: 0; display: grid; grid-template-rows: auto 1fr auto;
+      padding: clamp(16px, 4vw, 40px); pointer-events: none; }
+    .mono { font: 400 12px/1.4 "JetBrains Mono", ui-monospace, monospace; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--dim); }
+    .top, .bottom { display: flex; justify-content: space-between; gap: 16px; }
+    .hero { align-self: end; padding-bottom: clamp(24px, 6vh, 64px); }
+    h1 { font: 700 clamp(120px, 34vw, 420px)/.78 "Space Grotesk", system-ui, sans-serif;
+      letter-spacing: -.07em; margin-left: -.05em; mix-blend-mode: difference; }
+    h1 i { font-style: normal; color: var(--acid); }
+    .tag { font: 500 clamp(18px, 2.4vw, 28px)/1.25 "Space Grotesk", system-ui, sans-serif;
+      max-width: 22ch; margin-top: 20px; }
+    .tag span { color: var(--dim); }
+    .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--acid);
+      margin-right: 8px; vertical-align: 1px; animation: blink 1.6s steps(2) infinite; }
+    @keyframes blink { 50% { opacity: .15; } }
+    @media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
   </style>
 </head>
 <body>
-  <main>
-    <span class="tag">Тестовая страница</span>
-    <h1>PVF<span>.</span></h1>
-    <p class="lead">PVF — платформа для создания интерактивных 3D- и VR-приложений: от готовых модулей до запуска продукта.</p>
-
-    <h2>Что это такое</h2>
-    <div class="grid">
-      <div class="card"><b>Модули</b><p>Набор готовых компонентов: окружение, персонажи, транспорт, взаимодействия, сеть.</p></div>
-      <div class="card"><b>Инструменты</b><p>Конструкторы приложений и пайплайн подготовки 3D-контента.</p></div>
-      <div class="card"><b>Сервисы</b><p>Бэкенд, аналитика и платежи для реальных продуктов.</p></div>
+  <canvas id="c" aria-hidden="true"></canvas>
+  <div class="ui">
+    <div class="top mono"><span>pvf.asia</span><span><span class="dot"></span>In development</span></div>
+    <div class="hero">
+      <h1>PVF<i>.</i></h1>
+      <p class="tag">Real-time 3D &amp; VR worlds. <span>Built from modules, shipped as products.</span></p>
     </div>
-  </main>
-  <footer>© <span id="y">2026</span> PVF · pvf.asia</footer>
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+    <div class="bottom mono"><span>© <span id="y">2026</span></span><span id="coords">00.000 / 00.000</span></div>
+  </div>
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+    const c = document.getElementById('c'), x = c.getContext('2d');
+    const coords = document.getElementById('coords');
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let w, h, dpr, mx = 0, my = 0, tx = 0, ty = 0;
+    function size() {
+      dpr = Math.min(devicePixelRatio || 1, 2);
+      w = c.width = innerWidth * dpr; h = c.height = innerHeight * dpr;
+    }
+    addEventListener('resize', size); size();
+    addEventListener('pointermove', e => { tx = e.clientX / innerWidth - .5; ty = e.clientY / innerHeight - .5; });
+
+    const N = 64, S = 1.6;
+    function height(u, v, t) {
+      return Math.sin(u * .9 + t) * .35 + Math.cos(v * .7 - t * .8) * .35
+           + Math.sin((u + v) * .45 + t * .5) * .5;
+    }
+    function frame(ms) {
+      const t = still ? 0 : ms * .00035;
+      mx += (tx - mx) * .04; my += (ty - my) * .04;
+      x.fillStyle = '#050507'; x.fillRect(0, 0, w, h);
+      const f = Math.min(w, h) * 1.1, yaw = mx * .6, cy = Math.cos(yaw), sy = Math.sin(yaw);
+      const camY = 2.4 + my * 1.5, horizon = h * .38;
+      for (let j = N - 1; j >= 0; j--) {
+        for (let i = 0; i < N; i++) {
+          const u = (i - N / 2) * S * .5, v = j * S * .5 + 1 - (t * 2 % (S * .5));
+          const px = u * cy - v * sy, pz = u * sy + v * cy;
+          if (pz < .4) continue;
+          const py = height(u, v + t * 2, t) - camY;
+          const sx = w / 2 + px / pz * f, syy = horizon - py / pz * f;
+          if (sx < -10 || sx > w + 10 || syy > h + 10) continue;
+          const fade = Math.max(0, 1 - pz / (N * S * .5));
+          const peak = py + camY > .7;
+          x.fillStyle = peak ? `rgba(212,255,63,${fade})` : `rgba(242,242,238,${fade * .55})`;
+          const r = Math.max(.6, 2.2 * dpr / pz * 3);
+          x.fillRect(sx, syy, r, r);
+        }
+      }
+      coords.textContent = (mx * 90).toFixed(3).padStart(7, '0') + ' / ' + (t * 10 % 100).toFixed(3).padStart(6, '0');
+      if (!still) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
 </body>
 </html>
