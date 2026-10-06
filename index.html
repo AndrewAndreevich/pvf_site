@@ -134,7 +134,7 @@
         // fade the reflection out downwards
         gx.setTransform(1, 0, 0, 1, 0, 0);
         const fade = gx.createLinearGradient(0, size + gap, 0, size * 2 + gap);
-        fade.addColorStop(0, 'rgba(0,0,0,.05)'); fade.addColorStop(1, 'rgba(0,0,0,.95)');
+        fade.addColorStop(0, 'rgba(0,0,0,.25)'); fade.addColorStop(.75, 'rgba(0,0,0,1)');
         gx.globalCompositeOperation = 'destination-out';
         gx.fillStyle = fade; gx.fillRect(0, size + gap / 2, size, H - size);
         gx.globalCompositeOperation = 'source-over';
