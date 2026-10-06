@@ -66,20 +66,31 @@
       mx += (tx - mx) * .04; my += (ty - my) * .04;
       x.fillStyle = '#050507'; x.fillRect(0, 0, w, h);
       const f = Math.min(w, h) * 1.1, yaw = mx * .6, cy = Math.cos(yaw), sy = Math.sin(yaw);
-      const camY = 2.4 + my * 1.5, horizon = h * .38;
-      for (let j = N - 1; j >= 0; j--) {
+      const camY = 2.2 + my * 1.2, horizon = h * .42, step = S * .5, far = N * step;
+      const off = (t * 2) % step;
+      // project the grid once, then stroke rows (depth lines) and columns
+      const P = [];
+      for (let j = 0; j < N; j++) {
+        const row = [];
         for (let i = 0; i < N; i++) {
-          const u = (i - N / 2) * S * .5, v = j * S * .5 + 1 - (t * 2 % (S * .5));
+          const u = (i - N / 2) * step, v = j * step + 1 - off;
           const px = u * cy - v * sy, pz = u * sy + v * cy;
-          if (pz < .4) continue;
-          const py = height(u, v + t * 2, t) - camY;
-          const sx = w / 2 + px / pz * f, syy = horizon - py / pz * f;
-          if (sx < -10 || sx > w + 10 || syy > h + 10) continue;
-          const fade = Math.max(0, 1 - pz / (N * S * .5));
-          const peak = py + camY > .7;
-          x.fillStyle = peak ? `rgba(212,255,63,${fade})` : `rgba(242,242,238,${fade * .55})`;
-          const r = Math.max(.6, 2.2 * dpr / pz * 3);
-          x.fillRect(sx, syy, r, r);
+          const hy = height(u, v + t * 2, t);
+          row.push(pz < .3 ? null : [w / 2 + px / pz * f, horizon - (hy - camY) / pz * f, pz, hy]);
+        }
+        P.push(row);
+      }
+      x.lineWidth = dpr;
+      for (let j = N - 1; j >= 0; j--) {
+        for (let i = 0; i < N - 1; i++) {
+          const a = P[j][i], b = P[j][i + 1], d = j + 1 < N ? P[j + 1][i] : null;
+          if (!a) continue;
+          const fade = Math.max(0, 1 - a[2] / far) ** 1.4;
+          x.strokeStyle = a[3] > .55 ? `rgba(212,255,63,${fade * .95})` : `rgba(242,242,238,${fade * .32})`;
+          x.beginPath();
+          if (b) { x.moveTo(a[0], a[1]); x.lineTo(b[0], b[1]); }
+          if (d) { x.moveTo(a[0], a[1]); x.lineTo(d[0], d[1]); }
+          x.stroke();
         }
       }
       coords.textContent = (mx * 90).toFixed(3).padStart(7, '0') + ' / ' + (t * 10 % 100).toFixed(3).padStart(6, '0');
