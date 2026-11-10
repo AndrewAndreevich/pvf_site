@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Introducing PVF Visor, a smart visor for delivery riders and moto-taxi drivers</title>
+<meta name="description" content="A prototype replacement visor for standard scooter helmets: dashcam, navigation display and QR-code proof of delivery in one part.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --text: #1d1d1f;
+    --dim: #6e6e73;
+    --rule: #d2d2d7;
+    --link: #0066cc;
+    --bg: #ffffff;
+    --display: "SF Pro Display", "SF Pro Icons", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Inter", Helvetica, Arial, sans-serif;
+    --body: "SF Pro Text", "SF Pro Icons", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Inter", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 25px;
+    letter-spacing: -0.374px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { display: block; width: 100%; height: auto; }
+
+  /* Local nav */
+  .localnav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+  }
+  .localnav-inner {
+    width: 980px; max-width: 87.5%; height: 52px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .localnav-title {
+    font-family: var(--display); font-size: 21px; font-weight: 600;
+    letter-spacing: 0.231px; color: var(--text);
+  }
+  .localnav-title:hover { text-decoration: none; }
+  .localnav-links { display: flex; gap: 24px; font-size: 12px; letter-spacing: -0.12px; }
+  .localnav-links a { color: var(--text); opacity: 0.88; }
+
+  /* Widths: copy column 653, wide column 980 (as measured on the reference) */
+  .col { width: 653px; max-width: 87.5%; margin-left: auto; margin-right: auto; }
+  .wide { width: 980px; max-width: 87.5%; margin-left: auto; margin-right: auto; }
+
+  /* Header */
+  .article-header { margin-top: 52px; }
+  .eyebrow { font-size: 12px; line-height: 16px; letter-spacing: -0.12px; }
+  .eyebrow .category { display: block; font-weight: 700; text-transform: uppercase; }
+  .eyebrow .date { display: block; font-weight: 600; color: var(--dim); margin-top: 4px; }
+  h1 {
+    font-family: var(--display); font-size: 48px; line-height: 52px; font-weight: 700;
+    letter-spacing: -0.144px; margin-top: 18px;
+  }
+  .subhead {
+    font-family: var(--display); font-size: 24px; line-height: 28px; font-weight: 500;
+    letter-spacing: 0.216px; margin-top: 20px;
+  }
+
+  /* Figures */
+  figure { margin-top: 44px; margin-bottom: 44px; }
+  figure img { background: #f5f5f7; }
+  figcaption {
+    font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: -0.12px;
+    color: var(--dim); margin-top: 16px;
+  }
+  figure.wide figcaption { width: 653px; max-width: 100%; margin-left: auto; margin-right: auto; }
+
+  /* Body copy */
+  .pagebody { margin-top: 44px; margin-bottom: 44px; }
+  .pagebody p {
+    font-size: 19px; line-height: 27px; letter-spacing: 0.228px; margin-bottom: 27px;
+  }
+  .pagebody p:last-child { margin-bottom: 0; }
+  .pagebody h2 {
+    font-family: var(--display); font-size: 24px; line-height: 28px; font-weight: 700;
+    letter-spacing: 0.216px; margin-top: 8px; margin-bottom: 16px;
+  }
+  .location { font-size: 14px; line-height: 20px; font-weight: 700; letter-spacing: -0.224px; text-transform: uppercase; margin-right: 6px; }
+  .pagebody ul { margin: 0 0 27px 1.1em; }
+  .pagebody li { font-size: 19px; line-height: 27px; letter-spacing: 0.228px; margin-bottom: 11px; }
+
+  /* Footer notes */
+  .notes { border-top: 1px solid var(--rule); margin-top: 60px; padding-top: 22px; padding-bottom: 80px; }
+  .notes p, .notes li { font-size: 12px; line-height: 16px; letter-spacing: -0.12px; color: var(--dim); margin-bottom: 8px; }
+  .notes ol { margin-left: 1.4em; }
+  .notes h3 { font-size: 12px; line-height: 16px; font-weight: 700; color: var(--text); margin: 18px 0 8px; }
+
+  @media (max-width: 1068px) {
+    h1 { font-size: 40px; line-height: 44px; }
+    .subhead { font-size: 21px; line-height: 25px; letter-spacing: 0.231px; }
+  }
+  @media (max-width: 734px) {
+    .article-header { margin-top: 36px; }
+    h1 { font-size: 32px; line-height: 36px; letter-spacing: 0.128px; }
+    .pagebody p, .pagebody li { font-size: 17px; line-height: 25px; letter-spacing: -0.374px; margin-bottom: 25px; }
+    .pagebody h2 { font-size: 21px; line-height: 25px; letter-spacing: 0.231px; }
+    figure, .pagebody { margin-top: 32px; margin-bottom: 32px; }
+    .localnav-links a:first-child { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="localnav" aria-label="PVF">
+  <div class="localnav-inner">
+    <a class="localnav-title" href="/">PVF</a>
+    <div class="localnav-links">
+      <a href="#what-comes-next">Next steps</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+<article>
+
+  <header class="article-header col">
+    <div class="eyebrow">
+      <span class="category">Prototype</span>
+      <span class="date">November 11, 2026</span>
+    </div>
+    <h1>Introducing PVF Visor, a smart visor for delivery riders and moto-taxi drivers</h1>
+    <p class="subhead">The PVF Visor prototype puts a dashcam, turn-by-turn navigation and proof of delivery into the visor of a standard scooter helmet, so the rider&rsquo;s phone stays in the pocket</p>
+  </header>
+
+  <figure class="wide">
+    <img src="img/visor-front.jpg" width="1376" height="768" alt="Front view of PVF Visor: a clear helmet visor with a graphite arc along the top edge, a camera in the centre, two buttons on the right and a small optical module behind the glass">
+    <figcaption>PVF Visor fits the standard side mounts of a scooter helmet. The arc along the top edge holds the camera, the controls and the battery; the display module sits behind the glass in front of the left eye.</figcaption>
+  </figure>
+
+  <div class="pagebody col">
+    <p>PVF is developing PVF Visor, a prototype of a replacement visor for the helmets that delivery riders and moto-taxi drivers already wear. It combines three devices a rider uses today: a dashcam, a phone for navigation and a scanner that confirms an order was picked up and delivered. On a typical order a rider checks the phone for the next turn, the address, the time left and the next incoming order, often while moving. PVF Visor moves those things to the edge of the rider&rsquo;s view and takes the rest by voice, so both hands stay on the handlebar and the eyes stay on the road.</p>
+    <p>The product is one part that can be bought as a single unit. It clips onto the helmet&rsquo;s existing visor mounts and needs no change to the helmet shell. The phone keeps doing the computing; the visor shows, listens, speaks, scans and records.</p>
+    <p>&ldquo;A smart helmet costs as much as the scooter. A courier will not buy one, and a fleet will not buy a thousand,&rdquo; said Andrey Andreevich of PVF. &ldquo;A visor is a consumable. Fleets already replace them, so that is the part we make smart.&rdquo;</p>
+  </div>
+
+  <figure class="wide">
+    <img src="img/rider-closeup.jpg" width="1376" height="768" alt="Close-up of a delivery rider in the rain at night wearing a black open-face helmet with PVF Visor; the display module glows faintly green in front of his left eye">
+    <figcaption>The display covers one eye only and sits above the line of sight. The right eye and the lower part of the view stay clear in any weather.</figcaption>
+  </figure>
+
+  <div class="pagebody col">
+    <h2>Built Into the Visor</h2>
+    <p>Everything lives in a slim graphite arc that runs along the top edge of the visor from hinge to hinge. A forward-facing camera sits in the centre. Two buttons sit on the outer side near the right hinge, where a gloved thumb finds them without looking. The battery and the main board share the arc, and the two round side mounts stay exactly where a standard visor has them.</p>
+    <p>Because the electronics travel with the visor, a fleet can fit PVF Visor to the helmets it already owns and move it to a new helmet when the old one is retired.</p>
+  </div>
+
+  <figure class="col">
+    <img src="img/visor-34.jpg" width="1024" height="1024" alt="Three-quarter view of PVF Visor showing the graphite arc, the side hinge mount and the optical module hanging under the arc behind the clear visor">
+    <figcaption>The optical module hangs under the arc on the inner side of the glass, close to the eye, and lifts together with the visor.</figcaption>
+  </figure>
+
+  <div class="pagebody col">
+    <h2>A Display That Stays Out of the Way</h2>
+    <p>The display is a birdbath optical module of the kind used in AR glasses: a micro-OLED panel on top and a curved see-through lens below it. The reference module from SeeYA Technology pairs a 0.49-inch or 0.6-inch panel with a 43 to 44 degree field of view.<sup>1</sup> The image appears to float at a distance, so the rider does not refocus between the road and the display.</p>
+    <p>The interface is limited to four elements, in one colour:</p>
+    <ul>
+      <li>a map with the route, the next turn and the distance to it</li>
+      <li>the time left on the current order</li>
+      <li>the entrance and floor of the delivery address</li>
+      <li>a new order, with accept and decline</li>
+    </ul>
+    <p>Nothing else is shown while the scooter is moving.</p>
+  </div>
+
+  <figure class="col">
+    <img src="img/nav.jpg?v=3" width="1024" height="1024" alt="The rider's view through the closed, rain-covered visor of a motor scooter on a wet city street: the display module in the upper left shows a green street map with the route, a position marker, a right-turn arrow, 120 m and 06:40 inside its lens; both hands are on the handlebar">
+    <figcaption>Navigation as the rider sees it through the closed visor: a map with the route, the next turn, the distance and the time left on the order, all inside the lens of the display module. The road ahead stays clear.</figcaption>
+  </figure>
+
+  <div class="pagebody col">
+    <h2>Hands on the Handlebar</h2>
+    <p>Riders talk to PVF Visor instead of tapping a screen. A voice command accepts an order or calls the customer. The camera records the ride in a loop, like a dashcam, which gives riders and fleets a record when an accident or a dispute happens. When the sensors detect hard braking or an impact, the clip around that moment is saved with the speed, time and location.</p>
+  </div>
+
+  <figure class="col">
+    <img src="img/dashcam.jpg" width="1024" height="1024" alt="A frame recorded by the visor camera: a white car cuts into the rider's lane on a wet street; the overlay shows REC, the date and time, 32 km/h, GPS coordinates and the label EVENT SAVED around the car">
+    <figcaption>The visor as a dashcam: a continuous loop recording, with speed, time and location stamped on every frame and incidents saved automatically.</figcaption>
+  </figure>
+
+  <div class="pagebody col">
+    <h2>Proof of Pickup and Delivery</h2>
+    <p>PVF Visor confirms each handover without a phone. At the restaurant the rider looks at the order&rsquo;s QR code and the visor camera scans it: the order is marked as picked up. At the door the customer shows the QR code from their app, the visor scans it, a light on the arc turns green and the display shows &ldquo;Delivered&rdquo;. Both scans are stored with the time and place, so the platform, the rider and the customer see the same record.</p>
+  </div>
+
+  <figure class="wide">
+    <img src="img/verify.jpg" width="1376" height="768" alt="At a doorway a customer holds up a phone with a QR code; the rider wearing PVF Visor looks at it, a green light is lit on the arc and a green check mark shows in the display module">
+    <figcaption>The customer shows a QR code, the visor scans it, the light on the arc turns green and the delivery is confirmed, with both of the rider&rsquo;s hands free for the order.</figcaption>
+  </figure>
+
+  <div class="pagebody col">
+    <h2>For Moto-Taxi Drivers</h2>
+    <p>The same visor works for moto-taxi. Navigation and trip details appear on the display, and the passenger confirms the start of the trip with a QR code. On top of that, PVF Visor keeps a record of how the trip went. Motion sensors and the camera note speeding, hard braking, running a red light and phone use while riding, and build a riding score for each driver.<sup>3</sup> If a passenger or a driver reports harassment or unsafe behaviour, the recording of that trip is there to review.</p>
+
+    <h2>Part of a Family</h2>
+    <p>PVF Visor is designed as one piece of an ecosystem with smart glasses built on the same electronics and the same app. A rider wears the visor on the scooter and the glasses off it; orders, recordings and the riding history follow the person, not the device.</p>
+
+    <h2>Proven Electronics</h2>
+    <p>PVF Visor does not start from a blank board. Its camera, audio and wireless come from a smart-glasses platform that is already in production: an 8 or 13 megapixel stabilised camera, two speakers, a microphone, Bluetooth LE 5.3 or 5.4 and a voice assistant that runs through a phone app.<sup>2</sup> The glasses carry a 290 mAh battery sized for a frame; the arc of a visor has room for a cell that lasts a working shift.</p>
+    <p>What is new is the enclosure, the mount, the display module and the software that connects the visor to the rider&rsquo;s delivery app.</p>
+
+    <h2>One Unit or a Whole Fleet</h2>
+    <p>A rider can buy a single PVF Visor and use it with their own phone. A fleet operator can equip all its riders in one purchase and measure the result in the numbers it already tracks: time per order, incidents and customer disputes. For fleets PVF Visor can be sold as a batch, rented monthly or produced under a delivery or ride platform&rsquo;s own brand.</p>
+  </div>
+
+  <figure class="col">
+    <img src="img/fleet.jpg" width="1024" height="1024" alt="A row of electric delivery scooters parked after rain; a black helmet with PVF Visor rests on the nearest seat">
+    <figcaption>One visor design fits the open-face helmets a fleet already issues to its riders.</figcaption>
+  </figure>
+
+  <div class="pagebody col" id="what-comes-next">
+    <h2>What Comes Next</h2>
+    <ul>
+      <li>A working prototype built on three to five boards from the glasses platform, in a printed enclosure, with dashcam recording, voice and QR-code confirmation.</li>
+      <li>An optical test of the birdbath module at helmet distance, including fit across different riders and the visor in the raised position.</li>
+      <li>A pilot of 50 to 100 visors with one fleet operator, measured before and after.</li>
+      <li>A display version once the pilot shows the benefit.</li>
+    </ul>
+    <p>PVF is looking for a manufacturing partner for the electronics and an optics partner for the display module.</p>
+  </div>
+
+  <footer class="notes col" id="contact">
+    <p>PVF Visor is a prototype in development. Images on this page are visualisations, not photographs of a finished product. The features described are the planned scope of the prototype; battery life, weight and water resistance are design targets and have not been measured.</p>
+    <ol>
+      <li>Field of view and panel sizes are taken from SeeYA Technology&rsquo;s published data for its 0.49-inch and 0.6-inch birdbath modules. The published eye relief of these modules is 13.5 to 19 mm, so the module sits closer to the eye than the visor glass.</li>
+      <li>Camera, audio and wireless figures are taken from the specification sheet of the G-series smart glasses.</li>
+      <li>Recording passengers and scoring drivers is subject to local privacy and labour law; notice, consent and data retention have to be set per market.</li>
+    </ol>
+    <h3>Contact</h3>
+    <p>Andrey Andreevich, PVF &middot; <a href="https://pvf.asia">pvf.asia</a></p>
+  </footer>
+
+</article>
+</main>
+
+</body>
+</html>
