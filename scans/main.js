@@ -1,9 +1,8 @@
-// PVF Scan page: deep-zoom lens, timelines of rooms through time, "how it works" tabs, the estimate.
+// PVF Scan page: deep-zoom lens, timelines of rooms through time, "how it works" tabs.
 (() => {
   const V = '1';
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const money = (n) => `$${Math.round(n).toLocaleString('en-US')}`;
 
   // ---------- deep-zoom lens over the hero scan ----------
   document.querySelectorAll('[data-zoom]').forEach((z) => {
@@ -133,65 +132,4 @@
     });
   });
   showHow(0);
-
-  // ---------- estimate (the same numbers as the LOCO Arts proposal: $40/h) ----------
-  const RATE = 40;
-  const P = { night: 2, instant: 3, handling: 1, perWork: 1, perSpace: 3 };
-  const MODS = [
-    { id: 'flat', label: 'Artworks · Flat', h: 30, on: true, works: true },
-    { id: 'object', label: 'Artworks · Flat + Object (3D)', h: 78, works: true, replaces: 'flat' },
-    { id: 'progress', label: 'Progress timeline for works', h: 20, needs: ['flat', 'object'] },
-    { id: 'studio', label: 'Studios in 3D', h: 34, studios: true },
-    { id: 'studiohist', label: 'Studios from artist to artist', h: 16, needs: ['studio'] },
-    { id: 'hall', label: 'Exhibition halls in 3D', h: 26 },
-    { id: 'hallhist', label: 'Every exhibition on a timeline', h: 24, needs: ['hall'], halls: true },
-    { id: 'park', label: 'The park: 2D map + 3D scan', h: 152, park: true },
-  ];
-  const WHO = { team: 6, members: 20 }; const PROC = { cloud: 6, own: 40 };
-  const VOLS = [{ id: 'works', label: 'Works scanned', max: 200, step: 5, v: 20 }, { id: 'studios', label: 'Studios scanned', max: 10, step: 1, v: 2 }, { id: 'halls', label: 'Halls scanned', max: 10, step: 1, v: 2 }];
-  const calc = document.querySelector('.calc');
-  calc.querySelector('.mods').insertAdjacentHTML('beforeend', MODS.map((m) => `<label class=mod><input type=checkbox value=${m.id}${m.on ? ' checked' : ''}><span>${m.label}</span><span class=mh>${m.h} h</span></label>`).join(''));
-  calc.querySelector('.vols').insertAdjacentHTML('beforeend', VOLS.map((v) => `<label class=vol data-v=${v.id}><span>${v.label} <output>${v.v}</output></span><input type=range min=0 max=${v.max} step=${v.step} value=${v.v}></label>`).join(''));
-  const box = (id) => calc.querySelector(`.mods input[value=${id}]`);
-  const update = (e) => {
-    // Flat and Flat + Object are one choice
-    if (e && e.target.value === 'object' && e.target.checked) box('flat').checked = false;
-    if (e && e.target.value === 'flat' && e.target.checked) box('object').checked = false;
-    const on = new Set(MODS.filter((m) => box(m.id).checked).map((m) => m.id));
-    MODS.forEach((m) => {
-      const ok = !m.needs || m.needs.some((x) => on.has(x));
-      box(m.id).disabled = !ok; if (!ok) { box(m.id).checked = false; on.delete(m.id); }
-      box(m.id).closest('label').classList.toggle('off', !ok);
-    });
-    const vol = {}; calc.querySelectorAll('.vol').forEach((l) => { vol[l.dataset.v] = Number(l.querySelector('input').value); l.querySelector('output').textContent = l.querySelector('input').value; });
-    const scanWorks = on.has('flat') || on.has('object'); const scanStudios = on.has('studio'); const scanHalls = on.has('hallhist');
-    calc.querySelector('[data-v=works]').hidden = !scanWorks;
-    calc.querySelector('[data-v=studios]').hidden = !scanStudios;
-    calc.querySelector('[data-v=halls]').hidden = !scanHalls;
-    const proc = calc.querySelector('#c-proc').value; const own = proc === 'own';
-    const any = on.size > 0;
-    const rows = MODS.filter((m) => on.has(m.id)).map((m) => [m.label, m.h]);
-    if (any) {
-      const who = calc.querySelector('#c-who').value;
-      rows.push([who === 'team' ? 'Training the team' : 'Training + member uploads', WHO[who]]);
-      rows.push([own ? 'Residence PC + NAS setup' : 'Cloud setup', own ? PROC.own : PROC.cloud]);
-    }
-    const hours = rows.reduce((a, [, h]) => a + h, 0);
-    const per = (base) => (own ? P.handling : base * P[proc] + P.handling);
-    const n = { works: scanWorks ? vol.works : 0, studios: scanStudios ? vol.studios : 0, halls: scanHalls ? vol.halls : 0 };
-    const procCost = n.works * per(P.perWork) + (n.studios + n.halls) * per(P.perSpace);
-    let lo = 0; let hi = 0;
-    if (any) { lo += 2 + 5; hi += 15 + 20; }
-    if (on.has('park')) { lo += 5; hi += 20; }
-    calc.querySelector('.c-out').innerHTML = !any ? '<p class=c-none>Pick a module to see the estimate.</p>' : `
-      <table><tbody>${rows.map(([l, h]) => `<tr><td>${esc(l)}</td><td>${h} h</td><td>${money(h * RATE)}</td></tr>`).join('')}</tbody>
-      <tfoot><tr><td>Work, once</td><td>${hours} h</td><td>${money(hours * RATE)}</td></tr></tfoot></table>
-      <p class=c-row><span>Processing a month${own ? ', on the residence PC' : proc === 'night' ? ', night queue' : ', at once'}</span><b>${money(procCost)}</b></p>
-      <p class=c-sub>${[n.works && `${n.works} works × ${money(per(P.perWork))}`, n.studios && `${n.studios} studios × ${money(per(P.perSpace))}`, n.halls && `${n.halls} halls × ${money(per(P.perSpace))}`].filter(Boolean).join(' · ') || 'Nothing scanned again yet'}</p>
-      <p class=c-row><span>Storage and CDN a month</span><b>${money(lo)}–${money(hi)}</b></p>
-      ${own ? '<p class=c-row><span>Equipment, bought once</span><b>PC ≈ $2,000 · NAS 16 TB ≈ ₾3,500</b></p>' : ''}
-      <p class=c-note>Hours are for building each module into the LOCO Arts website. Prices are estimates until the scope is agreed.</p>`;
-  };
-  calc.addEventListener('input', update); calc.addEventListener('change', update);
-  update();
 })();
